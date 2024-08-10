@@ -30,7 +30,7 @@ public class TokenProvider implements InitializingBean {
     @Value("${spring.security.key.token.secret}")
     private String secretKey;
 
-    private final long tokenValidityInMilliseconds = 30 * 60 * 1000L;
+    private final long tokenValidityInMilliseconds = 2 * 60 * 60 * 1000L;
 
     @Override
     public void afterPropertiesSet() {
