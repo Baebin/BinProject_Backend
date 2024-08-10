@@ -17,7 +17,7 @@ public interface AccountService {
 
     // Getter
     AccountProfileDetailDto loadProfile(SecurityAccount securityAccount);
-    ResponseEntity<byte[]> loadProfileImage(SecurityAccount securityAccount) throws IOException;
+    ResponseEntity<byte[]> loadProfileImage(Long idx) throws IOException;
 
     // Setter
     void editProfileImage(SecurityAccount securityAccount, MultipartFile file) throws IOException;

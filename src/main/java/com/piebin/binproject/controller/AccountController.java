@@ -46,10 +46,10 @@ public class AccountController {
                 accountService.loadProfile(securityAccount), HttpStatus.OK);
     }
 
-    @GetMapping(API + "load/profile/image")
+    @GetMapping(API + "load/profile/image/{idx}")
     public ResponseEntity<byte[]> loadProfileImage(
-            @AuthenticationPrincipal SecurityAccount securityAccount) throws IOException {
-        return accountService.loadProfileImage(securityAccount);
+            @PathVariable("idx") Long idx) throws IOException {
+        return accountService.loadProfileImage(idx);
     }
 
     // Setter

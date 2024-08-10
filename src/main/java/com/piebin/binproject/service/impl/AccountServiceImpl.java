@@ -88,8 +88,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<byte[]> loadProfileImage(SecurityAccount securityAccount) throws IOException {
-        String path = "user/" + securityAccount.getAccount().getIdx();
+    public ResponseEntity<byte[]> loadProfileImage(Long idx) throws IOException {
+        String path = "user/" + idx;
         String name = "profile";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         ImageDetailDto imageDetailDto = imageService.download(imageDto);
