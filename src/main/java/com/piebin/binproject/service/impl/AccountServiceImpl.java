@@ -124,7 +124,7 @@ public class AccountServiceImpl implements AccountService {
     public void editPhone(SecurityAccount securityAccount, AccountPhoneDto dto) {
         Account account = accountRepository.findById(securityAccount.getAccount().getId())
                 .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
-        account.setPhone(passwordEncoder.encode(dto.getPhone()));
+        account.setPhone(dto.getPhone());
     }
 
     @Override
@@ -132,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
     public void editEmail(SecurityAccount securityAccount, AccountEmailDto dto) {
         Account account = accountRepository.findById(securityAccount.getAccount().getId())
                 .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
-        account.setEmail(passwordEncoder.encode(dto.getEmail()));
+        account.setEmail(dto.getEmail());
     }
 
     // Deleter
