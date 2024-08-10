@@ -1,13 +1,12 @@
 package com.piebin.binproject.model.domain;
 
+import com.piebin.binproject.entity.Permission;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -16,29 +15,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Account {
+public class AccountPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    // Authorization
-    @Column(unique = true)
-    private String id;
+    @ManyToOne
+    private Account account;
 
-    private String password;
-
-    // Profile
-    private String name;
-
-    private String phone;
-
-    @Column(unique = true)
-    private String email;
-
-    // Permission
-    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE)
-    @Builder.Default
-    private List<AccountPermission> permissions = new ArrayList<>();
+    private Permission permission;
 
     // Etc
     @CreatedDate
