@@ -5,10 +5,7 @@ import com.piebin.binproject.exception.AccountException;
 import com.piebin.binproject.exception.entity.AccountErrorCode;
 import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.AccountPermission;
-import com.piebin.binproject.model.dto.account.AccountLoginDto;
-import com.piebin.binproject.model.dto.account.AccountProfileDetailDto;
-import com.piebin.binproject.model.dto.account.AccountRegisterDto;
-import com.piebin.binproject.model.dto.account.AccountTokenDetailDto;
+import com.piebin.binproject.model.dto.account.*;
 import com.piebin.binproject.model.dto.image.ImageDetailDto;
 import com.piebin.binproject.model.dto.image.ImageDto;
 import com.piebin.binproject.repository.AccountPermissionRepository;
@@ -104,6 +101,38 @@ public class AccountServiceImpl implements AccountService {
         String name = "profile";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         imageService.upload(file, imageDto);
+    }
+
+    @Override
+    @Transactional
+    public void editName(SecurityAccount securityAccount, AccountNameDto dto) {
+        Account account = accountRepository.findById(securityAccount.getAccount().getId())
+                .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
+        account.setName(dto.getName());
+    }
+
+    @Override
+    @Transactional
+    public void editPassword(SecurityAccount securityAccount, AccountPasswordDto dto) {
+        Account account = accountRepository.findById(securityAccount.getAccount().getId())
+                .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
+        account.setPassword(passwordEncoder.encode(dto.getPassword()));
+    }
+
+    @Override
+    @Transactional
+    public void editPhone(SecurityAccount securityAccount, AccountPhoneDto dto) {
+        Account account = accountRepository.findById(securityAccount.getAccount().getId())
+                .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
+        account.setPhone(passwordEncoder.encode(dto.getPhone()));
+    }
+
+    @Override
+    @Transactional
+    public void editEmail(SecurityAccount securityAccount, AccountEmailDto dto) {
+        Account account = accountRepository.findById(securityAccount.getAccount().getId())
+                .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
+        account.setEmail(passwordEncoder.encode(dto.getEmail()));
     }
 
     // Deleter

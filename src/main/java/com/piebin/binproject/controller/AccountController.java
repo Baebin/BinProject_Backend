@@ -1,9 +1,6 @@
 package com.piebin.binproject.controller;
 
-import com.piebin.binproject.model.dto.account.AccountLoginDto;
-import com.piebin.binproject.model.dto.account.AccountProfileDetailDto;
-import com.piebin.binproject.model.dto.account.AccountRegisterDto;
-import com.piebin.binproject.model.dto.account.AccountTokenDetailDto;
+import com.piebin.binproject.model.dto.account.*;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.AccountService;
 import jakarta.validation.Valid;
@@ -58,6 +55,38 @@ public class AccountController {
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestPart(value = "file") MultipartFile file) throws IOException {
         accountService.editProfileImage(securityAccount, file);
+        return ResponseEntity.ok(true);
+    }
+
+    @PatchMapping(API + "edit/name")
+    public ResponseEntity<Boolean> editName(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid AccountNameDto dto) {
+        accountService.editName(securityAccount, dto);
+        return ResponseEntity.ok(true);
+    }
+
+    @PatchMapping(API + "edit/password")
+    public ResponseEntity<Boolean> editPassword(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid AccountPasswordDto dto) {
+        accountService.editPassword(securityAccount, dto);
+        return ResponseEntity.ok(true);
+    }
+
+    @PatchMapping(API + "edit/phone")
+    public ResponseEntity<Boolean> editName(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid AccountPhoneDto dto) {
+        accountService.editPhone(securityAccount, dto);
+        return ResponseEntity.ok(true);
+    }
+
+    @PatchMapping(API + "edit/email")
+    public ResponseEntity<Boolean> editName(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid AccountEmailDto dto) {
+        accountService.editEmail(securityAccount, dto);
         return ResponseEntity.ok(true);
     }
 
