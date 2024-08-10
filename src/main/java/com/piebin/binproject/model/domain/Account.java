@@ -33,7 +33,7 @@ public class Account {
     private String email;
 
     // Permission
-    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
     private List<AccountPermission> permissions = new ArrayList<>();
 

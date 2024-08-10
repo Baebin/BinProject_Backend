@@ -5,9 +5,12 @@ import com.piebin.binproject.exception.AccountException;
 import com.piebin.binproject.exception.entity.AccountErrorCode;
 import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.AccountPermission;
+import com.piebin.binproject.model.dto.AccountLoginDto;
 import com.piebin.binproject.model.dto.AccountRegisterDto;
+import com.piebin.binproject.model.dto.AccountTokenDetailDto;
 import com.piebin.binproject.repository.AccountPermissionRepository;
 import com.piebin.binproject.repository.AccountRepository;
+import com.piebin.binproject.security.TokenProvider;
 import com.piebin.binproject.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,8 +23,10 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final AccountPermissionRepository accountPermissionRepository;
 
+    private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
+    // Utility
     @Override
     @Transactional
     public void register(AccountRegisterDto dto) {
@@ -45,5 +50,18 @@ public class AccountServiceImpl implements AccountService {
                 .permission(Permission.USER)
                 .build();
         accountPermissionRepository.save(accountPermission);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AccountTokenDetailDto login(AccountLoginDto dto) {
+        Account account = accountRepository.findById(dto.getId())
+                .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
+        if (!passwordEncoder.matches(dto.getPassword(), account.getPassword()))
+            throw new AccountException(AccountErrorCode.PASSWORD_INCORRECT);
+        String token = tokenProvider.createAccessToken(dto.getId());
+        return AccountTokenDetailDto.builder()
+                .token(token)
+                .build();
     }
 }
