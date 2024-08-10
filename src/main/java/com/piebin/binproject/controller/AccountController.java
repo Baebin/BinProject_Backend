@@ -75,7 +75,7 @@ public class AccountController {
     }
 
     @PatchMapping(API + "edit/phone")
-    public ResponseEntity<Boolean> editName(
+    public ResponseEntity<Boolean> editPhone(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid AccountPhoneDto dto) {
         accountService.editPhone(securityAccount, dto);
@@ -83,7 +83,7 @@ public class AccountController {
     }
 
     @PatchMapping(API + "edit/email")
-    public ResponseEntity<Boolean> editName(
+    public ResponseEntity<Boolean> editEmail(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid AccountEmailDto dto) {
         accountService.editEmail(securityAccount, dto);
