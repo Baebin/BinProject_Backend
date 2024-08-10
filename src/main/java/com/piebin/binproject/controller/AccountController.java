@@ -1,13 +1,17 @@
 package com.piebin.binproject.controller;
 
 import com.piebin.binproject.model.dto.AccountLoginDto;
+import com.piebin.binproject.model.dto.AccountProfileDetailDto;
 import com.piebin.binproject.model.dto.AccountRegisterDto;
 import com.piebin.binproject.model.dto.AccountTokenDetailDto;
+import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +36,13 @@ public class AccountController {
             @RequestBody @Valid AccountLoginDto dto) {
         return new ResponseEntity<>(
                 accountService.login(dto), HttpStatus.OK);
+    }
+
+    // Getter
+    @GetMapping(API + "load/profile")
+    public ResponseEntity<AccountProfileDetailDto> loadProfile(
+            @AuthenticationPrincipal SecurityAccount securityAccount) {
+        return new ResponseEntity<>(
+                accountService.loadProfile(securityAccount), HttpStatus.OK);
     }
 }

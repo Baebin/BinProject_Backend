@@ -6,10 +6,12 @@ import com.piebin.binproject.exception.entity.AccountErrorCode;
 import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.AccountPermission;
 import com.piebin.binproject.model.dto.AccountLoginDto;
+import com.piebin.binproject.model.dto.AccountProfileDetailDto;
 import com.piebin.binproject.model.dto.AccountRegisterDto;
 import com.piebin.binproject.model.dto.AccountTokenDetailDto;
 import com.piebin.binproject.repository.AccountPermissionRepository;
 import com.piebin.binproject.repository.AccountRepository;
+import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.security.TokenProvider;
 import com.piebin.binproject.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +67,13 @@ public class AccountServiceImpl implements AccountService {
         return AccountTokenDetailDto.builder()
                 .token(token)
                 .build();
+    }
+
+    // Getter
+    @Override
+    @Transactional(readOnly = true)
+    public AccountProfileDetailDto loadProfile(SecurityAccount securityAccount) {
+        Account account = securityAccount.getAccount();
+        return AccountProfileDetailDto.toDto(account);
     }
 }
