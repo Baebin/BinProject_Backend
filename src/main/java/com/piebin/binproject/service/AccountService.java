@@ -5,6 +5,10 @@ import com.piebin.binproject.model.dto.account.AccountProfileDetailDto;
 import com.piebin.binproject.model.dto.account.AccountRegisterDto;
 import com.piebin.binproject.model.dto.account.AccountTokenDetailDto;
 import com.piebin.binproject.security.SecurityAccount;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface AccountService {
     // Utility
@@ -13,4 +17,9 @@ public interface AccountService {
 
     // Getter
     AccountProfileDetailDto loadProfile(SecurityAccount securityAccount);
+    ResponseEntity<byte[]> loadProfileImage(SecurityAccount securityAccount) throws IOException;
+
+    // Setter
+    void editProfileImage(SecurityAccount securityAccount, MultipartFile file) throws IOException;
+    void deleteProfileImage(SecurityAccount securityAccount);
 }

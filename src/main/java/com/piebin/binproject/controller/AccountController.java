@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,5 +44,28 @@ public class AccountController {
             @AuthenticationPrincipal SecurityAccount securityAccount) {
         return new ResponseEntity<>(
                 accountService.loadProfile(securityAccount), HttpStatus.OK);
+    }
+
+    @GetMapping(API + "load/profile/image")
+    public ResponseEntity<byte[]> loadProfileImage(
+            @AuthenticationPrincipal SecurityAccount securityAccount) throws IOException {
+        return accountService.loadProfileImage(securityAccount);
+    }
+
+    // Setter
+    @PatchMapping(API + "edit/profile/image")
+    public ResponseEntity<Boolean> editProfileImage(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestPart(value = "file") MultipartFile file) throws IOException {
+        accountService.editProfileImage(securityAccount, file);
+        return ResponseEntity.ok(true);
+    }
+
+    // Deleter
+    @DeleteMapping(API + "delete/profile/image")
+    public ResponseEntity<Boolean> deleteProfileImage(
+            @AuthenticationPrincipal SecurityAccount securityAccount) {
+        accountService.deleteProfileImage(securityAccount);
+        return ResponseEntity.ok(true);
     }
 }
