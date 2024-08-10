@@ -24,14 +24,11 @@ public class Account {
     // Authorization
     @Column(unique = true)
     private String id;
-
     private String password;
 
     // Profile
     private String name;
-
     private String phone;
-
     @Column(unique = true)
     private String email;
 
