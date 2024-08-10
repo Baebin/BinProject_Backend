@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     // Setter
-    @PatchMapping(API + "edit/profile/image")
+    @PutMapping(API + "edit/profile/image")
     public ResponseEntity<Boolean> editProfileImage(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestPart(value = "file") MultipartFile file) throws IOException {
@@ -58,7 +58,7 @@ public class AccountController {
         return ResponseEntity.ok(true);
     }
 
-    @PatchMapping(API + "edit/name")
+    @PutMapping(API + "edit/name")
     public ResponseEntity<Boolean> editName(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid AccountNameDto dto) {
@@ -66,7 +66,7 @@ public class AccountController {
         return ResponseEntity.ok(true);
     }
 
-    @PatchMapping(API + "edit/password")
+    @PutMapping(API + "edit/password")
     public ResponseEntity<Boolean> editPassword(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid AccountPasswordDto dto) {
@@ -74,7 +74,7 @@ public class AccountController {
         return ResponseEntity.ok(true);
     }
 
-    @PatchMapping(API + "edit/phone")
+    @PutMapping(API + "edit/phone")
     public ResponseEntity<Boolean> editPhone(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid AccountPhoneDto dto) {
@@ -82,7 +82,7 @@ public class AccountController {
         return ResponseEntity.ok(true);
     }
 
-    @PatchMapping(API + "edit/email")
+    @PutMapping(API + "edit/email")
     public ResponseEntity<Boolean> editEmail(
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid AccountEmailDto dto) {
