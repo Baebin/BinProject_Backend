@@ -19,6 +19,5 @@ public class AccountRegisterDto {
     @NotBlank(message = "닉네임을 입력해주세요.")
     private String name;
     private String phone;
-    @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 }

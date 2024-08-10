@@ -23,6 +23,7 @@ public class AccountPermission {
     @ManyToOne
     private Account account;
 
+    @Enumerated(EnumType.STRING)
     private Permission permission;
 
     // Etc
