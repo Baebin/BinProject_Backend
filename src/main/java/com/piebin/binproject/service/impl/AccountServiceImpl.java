@@ -32,8 +32,10 @@ public class AccountServiceImpl implements AccountService {
     public void register(AccountRegisterDto dto) {
         if (accountRepository.existsById(dto.getId()))
             throw new AccountException(AccountErrorCode.ID_DUPLICATED);
+        /*
         if (accountRepository.existsByEmail(dto.getEmail()))
             throw new AccountException(AccountErrorCode.EMAIL_DUPLICATED);
+        */
 
         Account account = Account.builder()
                 .id(dto.getId())

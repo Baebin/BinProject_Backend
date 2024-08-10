@@ -29,7 +29,6 @@ public class Account {
     // Profile
     private String name;
     private String phone;
-    @Column(unique = true)
     private String email;
 
     // Permission
