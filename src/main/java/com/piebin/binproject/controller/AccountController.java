@@ -1,9 +1,9 @@
 package com.piebin.binproject.controller;
 
-import com.piebin.binproject.model.dto.AccountLoginDto;
-import com.piebin.binproject.model.dto.AccountProfileDetailDto;
-import com.piebin.binproject.model.dto.AccountRegisterDto;
-import com.piebin.binproject.model.dto.AccountTokenDetailDto;
+import com.piebin.binproject.model.dto.account.AccountLoginDto;
+import com.piebin.binproject.model.dto.account.AccountProfileDetailDto;
+import com.piebin.binproject.model.dto.account.AccountRegisterDto;
+import com.piebin.binproject.model.dto.account.AccountTokenDetailDto;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.AccountService;
 import jakarta.validation.Valid;

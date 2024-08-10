@@ -1,4 +1,4 @@
-package com.piebin.binproject.model.dto;
+package com.piebin.binproject.model.dto.account;
 
 import com.piebin.binproject.model.domain.Account;
 import lombok.AllArgsConstructor;
