@@ -1,5 +1,6 @@
 package com.piebin.binproject.exception.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.piebin.binproject.exception.entity.PermissionErrorCode;
 import com.piebin.binproject.exception.entity.SystemErrorCode;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorDto {
+    @JsonProperty("http_status")
     private HttpStatus httpStatus;
     private String message;
 
