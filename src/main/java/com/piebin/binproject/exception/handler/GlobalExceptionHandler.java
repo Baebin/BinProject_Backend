@@ -25,6 +25,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
+    @ExceptionHandler(NoticeException.class)
+    public ResponseEntity<?> handleNoticeException(NoticeException e) {
+        ErrorDto response = ErrorDto.builder()
+                .httpStatus(e.getErrorCode().getHttpStatus())
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
     @ExceptionHandler(FileException.class)
     public ResponseEntity<?> handleFileException(FileException e) {
         ErrorDto response = ErrorDto.builder()

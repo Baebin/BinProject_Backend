@@ -23,6 +23,8 @@ public class ImageDetailDto {
                 mediaType = MediaType.IMAGE_JPEG;
             else if (dto.getExt().contains("png"))
                 mediaType = MediaType.IMAGE_PNG;
+            else if (dto.getExt().contains("gif"))
+                mediaType = MediaType.IMAGE_GIF;
         }
         return ResponseEntity.ok()
                 .contentType(mediaType)

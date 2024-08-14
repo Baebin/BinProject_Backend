@@ -43,6 +43,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String getType(String type) {
+        if (type.contains("image/gif"))
+            return "gif";
         if (type.contains("image/png"))
             return "png";
         if (type.contains("image/jpeg") || type.contains("application/octet-stream"))

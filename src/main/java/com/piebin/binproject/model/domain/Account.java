@@ -31,6 +31,10 @@ public class Account {
     private String phone;
     private String email;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    List<Notice> notices = new ArrayList<>();
+
     // Permission
     @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
