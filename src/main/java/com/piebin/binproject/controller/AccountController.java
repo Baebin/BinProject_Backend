@@ -38,9 +38,10 @@ public class AccountController {
     // Getter
     @GetMapping(API + "load/profile")
     public ResponseEntity<AccountProfileDetailDto> loadProfile(
-            @AuthenticationPrincipal SecurityAccount securityAccount) {
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            AccountIdxDto dto) {
         return new ResponseEntity<>(
-                accountService.loadProfile(securityAccount), HttpStatus.OK);
+                accountService.loadProfile(securityAccount, dto), HttpStatus.OK);
     }
 
     @GetMapping(API + "load/profile/image/{idx}")

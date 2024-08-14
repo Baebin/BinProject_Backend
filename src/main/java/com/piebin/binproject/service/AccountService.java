@@ -13,7 +13,7 @@ public interface AccountService {
     AccountLoginDetailDto login(AccountLoginDto dto);
 
     // Getter
-    AccountProfileDetailDto loadProfile(SecurityAccount securityAccount);
+    AccountProfileDetailDto loadProfile(SecurityAccount securityAccount, AccountIdxDto dto);
     ResponseEntity<byte[]> loadProfileImage(Long idx) throws IOException;
 
     // Setter

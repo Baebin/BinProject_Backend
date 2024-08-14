@@ -76,7 +76,20 @@ public class AccountServiceImpl implements AccountService {
     // Getter
     @Override
     @Transactional(readOnly = true)
-    public AccountProfileDetailDto loadProfile(SecurityAccount securityAccount) {
+    public AccountProfileDetailDto loadProfile(SecurityAccount securityAccount, AccountIdxDto dto) {
+        if (dto.getIdx() != null) {
+            // My Profile Check
+            if (securityAccount != null) {
+                Account account = securityAccount.getAccount();
+                if (account.getIdx().equals(dto.getIdx()))
+                    return AccountProfileDetailDto.toDto(account);
+            }
+            // Other User
+            Account account = accountRepository.findByIdx(dto.getIdx())
+                    .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
+            return AccountProfileDetailDto.toCommonDto(account);
+        }
+        // My Profile
         Account account = securityAccount.getAccount();
         return AccountProfileDetailDto.toDto(account);
     }

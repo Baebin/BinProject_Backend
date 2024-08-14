@@ -34,4 +34,12 @@ public class AccountProfileDetailDto {
                 .regDate(account.getRegDate())
                 .build();
     }
+    public static AccountProfileDetailDto toCommonDto(Account account) {
+        return AccountProfileDetailDto.builder()
+                .idx(account.getIdx())
+                .id(account.getId())
+                .name(account.getName())
+                .regDate(account.getRegDate())
+                .build();
+    }
 }
