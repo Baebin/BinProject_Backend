@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
         ErrorDto response = new ErrorDto(SystemErrorCode.UNKNOWN);
         if (!ObjectUtils.isEmpty(e.getMessage()))
             if (e.getMessage().contains("Account"))
-                response = new ErrorDto(PermissionErrorCode.FORBIDDEN);
+                response = new ErrorDto(PermissionErrorCode.UNAUTHORIZED);
         log.error(e.getMessage());
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
