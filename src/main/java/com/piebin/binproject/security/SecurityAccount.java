@@ -18,7 +18,7 @@ public class SecurityAccount implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return account.getPermissions().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getPermission().name()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getPermission().name()))
                 .collect(Collectors.toList());
     }
 

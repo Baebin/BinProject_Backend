@@ -82,7 +82,7 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeRepository.findByIdx(dto.getIdx())
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
-            throw new PermissionException(PermissionErrorCode.UNAUTHORIZED);
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
         notice.setTitle(dto.getTitle());
         notice.setText(dto.getText());
     }
@@ -94,7 +94,7 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeRepository.findByIdx(dto.getIdx())
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
-            throw new PermissionException(PermissionErrorCode.UNAUTHORIZED);
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
         String path = "notice/" + notice.getIdx();
         String name = "thumbnail";
@@ -110,7 +110,7 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeRepository.findByIdx(dto.getIdx())
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
-            throw new PermissionException(PermissionErrorCode.UNAUTHORIZED);
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
         String path = "notice/" + notice.getIdx();
         String name = "thumbnail";

@@ -23,7 +23,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     // Utility
-    @Secured("ADMIN")
+    @Secured("ROLE_ADMIN")
     @PostMapping(API + "create")
     public ResponseEntity<Boolean> create(
             @AuthenticationPrincipal SecurityAccount securityAccount,
@@ -57,7 +57,7 @@ public class NoticeController {
     }
 
     // Setter
-    @Secured("ADMIN")
+    @Secured("ROLE_ADMIN")
     @PutMapping(API + "edit")
     public ResponseEntity<Boolean> edit(
             @AuthenticationPrincipal SecurityAccount securityAccount,
@@ -66,7 +66,7 @@ public class NoticeController {
         return ResponseEntity.ok(true);
     }
 
-    @Secured("ADMIN")
+    @Secured("ROLE_ADMIN")
     @PutMapping(API + "edit/image/thumbnail")
     public ResponseEntity<Boolean> editThumbnailImage(
             @AuthenticationPrincipal SecurityAccount securityAccount,
@@ -77,7 +77,7 @@ public class NoticeController {
     }
 
     // Deleter
-    @Secured("ADMIN")
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(API + "delete/image/thumbnail")
     public ResponseEntity<Boolean> deleteThumbnailImage(
             @AuthenticationPrincipal SecurityAccount securityAccount,
