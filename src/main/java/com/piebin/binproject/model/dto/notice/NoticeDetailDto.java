@@ -26,6 +26,8 @@ public class NoticeDetailDto {
     private String title;
     private String text;
 
+    private Integer files;
+
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     @JsonProperty("reg_date")
     private LocalDateTime regDate;
@@ -40,6 +42,8 @@ public class NoticeDetailDto {
 
                 .title(notice.getTitle())
                 .text(notice.getText())
+
+                .files(notice.getFiles())
 
                 .regDate(notice.getRegDate())
                 .build();

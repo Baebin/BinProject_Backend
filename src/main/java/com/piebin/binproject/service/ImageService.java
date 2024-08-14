@@ -2,6 +2,7 @@ package com.piebin.binproject.service;
 
 import com.piebin.binproject.model.dto.image.ImageDetailDto;
 import com.piebin.binproject.model.dto.image.ImageDto;
+import com.piebin.binproject.model.dto.image.ImagePathDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -17,4 +18,5 @@ public interface ImageService {
 
     // Deleter
     void delete(ImageDto dto);
+    void deleteAllByPathLike(ImagePathDto dto);
 }

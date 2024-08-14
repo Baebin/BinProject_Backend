@@ -64,15 +64,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public AccountTokenDetailDto login(AccountLoginDto dto) {
+    public AccountLoginDetailDto login(AccountLoginDto dto) {
         Account account = accountRepository.findById(dto.getId())
                 .orElseThrow(() -> new AccountException(AccountErrorCode.NOT_FOUND));
         if (!passwordEncoder.matches(dto.getPassword(), account.getPassword()))
             throw new AccountException(AccountErrorCode.PASSWORD_INCORRECT);
         String token = tokenProvider.createAccessToken(dto.getId());
-        return AccountTokenDetailDto.builder()
-                .token(token)
-                .build();
+        return AccountLoginDetailDto.toDto(account, token);
     }
 
     // Getter

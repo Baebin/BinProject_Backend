@@ -5,6 +5,7 @@ import com.piebin.binproject.exception.entity.FileErrorCode;
 import com.piebin.binproject.model.domain.Image;
 import com.piebin.binproject.model.dto.image.ImageDetailDto;
 import com.piebin.binproject.model.dto.image.ImageDto;
+import com.piebin.binproject.model.dto.image.ImagePathDto;
 import com.piebin.binproject.repository.ImageRepository;
 import com.piebin.binproject.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -117,5 +118,15 @@ public class ImageServiceImpl implements ImageService {
             throw new FileException(FileErrorCode.FILE_NOT_FOUND);
         if (file.delete())
             imageRepository.delete(image);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllByPathLike(ImagePathDto dto) {
+        for (Image image : imageRepository.findAllByPathLike(dto.getPath())) {
+            File file = getFile(image.getPath(), image.getName(), image.getExt());
+            imageRepository.delete(image);
+            file.delete();
+        }
     }
 }

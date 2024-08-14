@@ -8,6 +8,7 @@ import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.Notice;
 import com.piebin.binproject.model.dto.image.ImageDetailDto;
 import com.piebin.binproject.model.dto.image.ImageDto;
+import com.piebin.binproject.model.dto.image.ImagePathDto;
 import com.piebin.binproject.model.dto.notice.*;
 import com.piebin.binproject.repository.NoticeRepository;
 import com.piebin.binproject.security.SecurityAccount;
@@ -74,6 +75,16 @@ public class NoticeServiceImpl implements NoticeService {
         return ImageDetailDto.toResponseEntity(imageDetailDto);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<byte[]> loadImage(SecurityAccount securityAccount, Long idx, Long fileIdx) throws IOException {
+        String path = "notice/" + idx;
+        String name = fileIdx + "";
+        ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
+        ImageDetailDto imageDetailDto = imageService.download(imageDto);
+        return ImageDetailDto.toResponseEntity(imageDetailDto);
+    }
+
     // Setter
     @Override
     @Transactional
@@ -97,9 +108,29 @@ public class NoticeServiceImpl implements NoticeService {
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
         String path = "notice/" + notice.getIdx();
-        String name = "thumbnail";
+        // String name = "thumbnail";
+        String name = "0";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         imageService.upload(file, imageDto);
+    }
+
+    @Override
+    @Transactional
+    public void editImages(SecurityAccount securityAccount, List<MultipartFile> files, NoticeIdxDto dto) throws IOException {
+        Account account = securityAccount.getAccount();
+        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+                .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
+        if (!notice.getAuthor().getIdx().equals(account.getIdx()))
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
+
+        String path = "notice/" + notice.getIdx();
+
+        int idx = 0;
+        for (MultipartFile file : files) {
+            ImageDto imageDto = ImageDto.builder().path(path).name((idx++) + "").build();
+            imageService.upload(file, imageDto);
+        }
+        notice.setFiles(files.size());
     }
 
     // Deleter
@@ -113,8 +144,25 @@ public class NoticeServiceImpl implements NoticeService {
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
         String path = "notice/" + notice.getIdx();
-        String name = "thumbnail";
+        // String name = "thumbnail";
+        String name = "0";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         imageService.delete(imageDto);
+    }
+
+    @Override
+    @Transactional
+    public void deleteImages(SecurityAccount securityAccount, NoticeIdxDto dto) {
+        Account account = securityAccount.getAccount();
+        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+                .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
+        if (!notice.getAuthor().getIdx().equals(account.getIdx()))
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
+
+        String path = "notice/" + notice.getIdx();
+        ImagePathDto imageDto = ImagePathDto.builder().path(path).build();
+        imageService.deleteAllByPathLike(imageDto);
+
+        notice.setFiles(0);
     }
 }

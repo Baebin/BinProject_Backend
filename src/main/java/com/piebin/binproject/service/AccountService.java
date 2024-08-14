@@ -10,7 +10,7 @@ import java.io.IOException;
 public interface AccountService {
     // Utility
     void register(AccountRegisterDto dto);
-    AccountTokenDetailDto login(AccountLoginDto dto);
+    AccountLoginDetailDto login(AccountLoginDto dto);
 
     // Getter
     AccountProfileDetailDto loadProfile(SecurityAccount securityAccount);

@@ -25,6 +25,9 @@ public class Notice {
     private String title;
     private String text;
 
+    @Builder.Default
+    private Integer files = 0;
+
     @CreatedDate
     @Column(name = "reg_date")
     private LocalDateTime regDate;

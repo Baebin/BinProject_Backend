@@ -29,7 +29,7 @@ public class AccountController {
     }
 
     @PostMapping(API + "login")
-    public ResponseEntity<AccountTokenDetailDto> login(
+    public ResponseEntity<AccountLoginDetailDto> login(
             @RequestBody @Valid AccountLoginDto dto) {
         return new ResponseEntity<>(
                 accountService.login(dto), HttpStatus.OK);

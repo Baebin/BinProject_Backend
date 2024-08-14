@@ -56,6 +56,14 @@ public class NoticeController {
         return noticeService.loadThumbnailImage(securityAccount, idx);
     }
 
+    @GetMapping(API + "load/image/{idx}/{fileIdx}")
+    public ResponseEntity<byte[]> loadImage(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @PathVariable("idx") Long idx,
+            @PathVariable("fileIdx") Long fileIdx) throws IOException {
+        return noticeService.loadImage(securityAccount, idx, fileIdx);
+    }
+
     // Setter
     @Secured("ROLE_ADMIN")
     @PutMapping(API + "edit")
@@ -76,6 +84,16 @@ public class NoticeController {
         return ResponseEntity.ok(true);
     }
 
+    @Secured("ROLE_ADMIN")
+    @PutMapping(API + "edit/image/all")
+    public ResponseEntity<Boolean> editImages(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestPart(value = "file") List<MultipartFile> files,
+            @RequestPart(value = "dto") @Valid NoticeIdxDto dto) throws IOException {
+        noticeService.editImages(securityAccount, files, dto);
+        return ResponseEntity.ok(true);
+    }
+
     // Deleter
     @Secured("ROLE_ADMIN")
     @DeleteMapping(API + "delete/image/thumbnail")
@@ -83,6 +101,15 @@ public class NoticeController {
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @RequestBody @Valid NoticeIdxDto dto) {
         noticeService.deleteThumbnailImage(securityAccount, dto);
+        return ResponseEntity.ok(true);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping(API + "delete/image/all")
+    public ResponseEntity<Boolean> deleteImages(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid NoticeIdxDto dto) {
+        noticeService.deleteImages(securityAccount, dto);
         return ResponseEntity.ok(true);
     }
 }
