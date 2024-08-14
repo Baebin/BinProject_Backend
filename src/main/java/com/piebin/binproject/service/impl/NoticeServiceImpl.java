@@ -69,7 +69,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(readOnly = true)
     public ResponseEntity<byte[]> loadThumbnailImage(SecurityAccount securityAccount, Long idx) throws IOException {
         String path = "notice/" + idx;
-        String name = "thumbnail";
+        String name = "0";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         ImageDetailDto imageDetailDto = imageService.download(imageDto);
         return ImageDetailDto.toResponseEntity(imageDetailDto);
