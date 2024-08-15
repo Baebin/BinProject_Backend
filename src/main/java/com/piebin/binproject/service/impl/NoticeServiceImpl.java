@@ -1,5 +1,6 @@
 package com.piebin.binproject.service.impl;
 
+import com.piebin.binproject.entity.NoticeSearchFilter;
 import com.piebin.binproject.exception.NoticeException;
 import com.piebin.binproject.exception.PermissionException;
 import com.piebin.binproject.exception.entity.NoticeErrorCode;
@@ -59,8 +60,16 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(readOnly = true)
     public List<NoticeDetailDto> loadAll(SecurityAccount securityAccount, NoticeFilterDto dto) {
         List<NoticeDetailDto> dtos = new ArrayList<>();
+
+        List<Notice> notices;
         PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getCount());
-        for (Notice notice : noticeRepository.findAllByOrderByRegDateDesc(pageRequest))
+        if (dto.getFilter().equals(NoticeSearchFilter.TITLE))
+            notices = noticeRepository.findAllByTitleContainsOrderByRegDateDesc(pageRequest, dto.getData());
+        else if (dto.getFilter().equals(NoticeSearchFilter.TEXT))
+            notices = noticeRepository.findAllByTextContainsOrderByRegDateDesc(pageRequest, dto.getData());
+        else notices = noticeRepository.findAllByOrderByRegDateDesc(pageRequest);
+
+        for (Notice notice : notices)
             dtos.add(NoticeDetailDto.toDtoWithNonText(notice));
         return dtos;
     }

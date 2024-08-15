@@ -13,4 +13,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     Optional<Notice> findByIdx(Long idx);
 
     List<Notice> findAllByOrderByRegDateDesc(PageRequest pageRequest);
+    List<Notice> findAllByTitleContainsOrderByRegDateDesc(PageRequest pageRequest, String title);
+    List<Notice> findAllByTextContainsOrderByRegDateDesc(PageRequest pageRequest, String text);
 }
