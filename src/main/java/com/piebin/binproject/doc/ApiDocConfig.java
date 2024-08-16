@@ -38,4 +38,20 @@ public class ApiDocConfig {
                 .pathsToMatch("/api/account/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi noticeAPI() {
+        return GroupedOpenApi.builder()
+                .group("Notice API")
+                .pathsToMatch("/api/notice/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi postAPI() {
+        return GroupedOpenApi.builder()
+                .group("Post API")
+                .pathsToMatch("/api/post/**")
+                .build();
+    }
 }

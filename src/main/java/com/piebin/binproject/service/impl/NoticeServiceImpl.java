@@ -1,6 +1,6 @@
 package com.piebin.binproject.service.impl;
 
-import com.piebin.binproject.entity.NoticeSearchFilter;
+import com.piebin.binproject.entity.filter.NoticeSearchFilter;
 import com.piebin.binproject.entity.State;
 import com.piebin.binproject.exception.NoticeException;
 import com.piebin.binproject.exception.PermissionException;

@@ -1,4 +1,4 @@
-package com.piebin.binproject.model.dto.notice;
+package com.piebin.binproject.model.dto.post;
 
 import com.piebin.binproject.entity.filter.NoticeSearchFilter;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeFilterDto {
+public class PostFilterDto {
     private Integer page = 0;
     private Integer count = 12;
 
