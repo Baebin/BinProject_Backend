@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AccountLoginDetailDto {
     private Long idx;
+    private String name;
     private String token;
     private Permission permission;
 
@@ -27,6 +28,7 @@ public class AccountLoginDetailDto {
         }
         return AccountLoginDetailDto.builder()
                 .idx(account.getIdx())
+                .name(account.getName())
                 .token(token)
                 .permission(p)
                 .build();

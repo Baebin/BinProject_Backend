@@ -1,5 +1,6 @@
 package com.piebin.binproject.model.domain;
 
+import com.piebin.binproject.entity.State;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +20,9 @@ public class Notice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+    @Column(unique = true, nullable = false)
+    private String uuid;
+
     @ManyToOne
     private Account author;
 
@@ -31,4 +35,8 @@ public class Notice {
     @CreatedDate
     @Column(name = "reg_date")
     private LocalDateTime regDate;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private State state = State.ENABLED;
 }

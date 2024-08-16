@@ -32,6 +32,16 @@ public class NoticeController {
         return ResponseEntity.ok(true);
     }
 
+    @Secured("ROLE_ADMIN")
+    @PostMapping(API + "create/multipart")
+    public ResponseEntity<Boolean> createWithImages(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestPart(value = "file") List<MultipartFile> files,
+            @RequestPart(value = "dto") @Valid NoticeCreateDto dto) throws IOException {
+        noticeService.createWithImages(securityAccount, files, dto);
+        return ResponseEntity.ok(true);
+    }
+
     // Getter
     @GetMapping(API + "load")
     public ResponseEntity<NoticeDetailDto> load(
@@ -95,6 +105,15 @@ public class NoticeController {
     }
 
     // Deleter
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping(API + "delete")
+    public ResponseEntity<Boolean> delete(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid NoticeIdxDto dto) {
+        noticeService.delete(securityAccount, dto);
+        return ResponseEntity.ok(true);
+    }
+
     @Secured("ROLE_ADMIN")
     @DeleteMapping(API + "delete/image/thumbnail")
     public ResponseEntity<Boolean> deleteThumbnailImage(

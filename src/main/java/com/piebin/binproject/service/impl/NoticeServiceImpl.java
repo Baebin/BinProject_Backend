@@ -1,6 +1,7 @@
 package com.piebin.binproject.service.impl;
 
 import com.piebin.binproject.entity.NoticeSearchFilter;
+import com.piebin.binproject.entity.State;
 import com.piebin.binproject.exception.NoticeException;
 import com.piebin.binproject.exception.PermissionException;
 import com.piebin.binproject.exception.entity.NoticeErrorCode;
@@ -20,11 +21,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,19 +42,45 @@ public class NoticeServiceImpl implements NoticeService {
     public void create(SecurityAccount securityAccount, NoticeCreateDto dto) {
         Account account = securityAccount.getAccount();
 
+        String uuid = UUID.randomUUID().toString();
         Notice notice = Notice.builder()
                 .author(account)
+                .uuid(uuid)
                 .title(dto.getTitle())
                 .text(dto.getText())
                 .build();
         noticeRepository.save(notice);
     }
 
+    @Override
+    @Transactional
+    public void createWithImages(SecurityAccount securityAccount, List<MultipartFile> files, NoticeCreateDto dto) throws IOException {
+        Account account = securityAccount.getAccount();
+
+        String uuid = UUID.randomUUID().toString();
+        Notice notice = Notice.builder()
+                .author(account)
+                .uuid(uuid)
+                .title(dto.getTitle())
+                .text(dto.getText())
+                .build();
+        noticeRepository.save(notice);
+
+        String path = "notice/" + notice.getUuid();
+
+        int idx = 0;
+        for (MultipartFile file : files) {
+            ImageDto imageDto = ImageDto.builder().path(path).name((idx++) + "").build();
+            imageService.upload(file, imageDto);
+        }
+        notice.setFiles(files.size());
+    }
+
     // Getter
     @Override
     @Transactional(readOnly = true)
     public NoticeDetailDto load(SecurityAccount securityAccount, NoticeIdxDto dto) {
-        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         return NoticeDetailDto.toDto(notice);
     }
@@ -61,13 +90,18 @@ public class NoticeServiceImpl implements NoticeService {
     public List<NoticeDetailDto> loadAll(SecurityAccount securityAccount, NoticeFilterDto dto) {
         List<NoticeDetailDto> dtos = new ArrayList<>();
 
+        for (int i = 0; i < 3; i++)
+        System.out.println(UUID.randomUUID().toString());
+
         List<Notice> notices;
         PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getCount());
-        if (dto.getFilter().equals(NoticeSearchFilter.TITLE))
-            notices = noticeRepository.findAllByTitleContainsOrderByRegDateDesc(pageRequest, dto.getData());
-        else if (dto.getFilter().equals(NoticeSearchFilter.TEXT))
-            notices = noticeRepository.findAllByTextContainsOrderByRegDateDesc(pageRequest, dto.getData());
-        else notices = noticeRepository.findAllByOrderByRegDateDesc(pageRequest);
+        if (dto.getFilter().equals(NoticeSearchFilter.TITLE) && !ObjectUtils.isEmpty(dto.getData()))
+            notices = noticeRepository.findAllByTitleContainsAndStateOrderByRegDateDesc(pageRequest, dto.getData(), State.ENABLED);
+        else if (dto.getFilter().equals(NoticeSearchFilter.TEXT) && !ObjectUtils.isEmpty(dto.getData()))
+            notices = noticeRepository.findAllByTextContainsAndStateOrderByRegDateDesc(pageRequest, dto.getData(), State.ENABLED);
+        else if (!ObjectUtils.isEmpty(dto.getData()))
+            notices = noticeRepository.findAllByTitleContainsOrTextContainsAndStateOrderByRegDateDesc(pageRequest, dto.getData(), dto.getData(), State.ENABLED);
+        else notices = noticeRepository.findAllByStateOrderByRegDateDesc(pageRequest, State.ENABLED);
 
         for (Notice notice : notices)
             dtos.add(NoticeDetailDto.toDtoWithNonText(notice));
@@ -77,7 +111,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<byte[]> loadThumbnailImage(SecurityAccount securityAccount, Long idx) throws IOException {
-        String path = "notice/" + idx;
+        Notice notice = noticeRepository.findByIdxAndState(idx, State.ENABLED)
+                .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
+        String path = "notice/" + notice.getUuid();
         String name = "0";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         ImageDetailDto imageDetailDto = imageService.download(imageDto);
@@ -87,7 +123,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<byte[]> loadImage(SecurityAccount securityAccount, Long idx, Long fileIdx) throws IOException {
-        String path = "notice/" + idx;
+        Notice notice = noticeRepository.findByIdxAndState(idx, State.ENABLED)
+                .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
+        String path = "notice/" + notice.getUuid();
         String name = fileIdx + "";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
         ImageDetailDto imageDetailDto = imageService.download(imageDto);
@@ -99,7 +137,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void edit(SecurityAccount securityAccount, NoticeEditDto dto) {
         Account account = securityAccount.getAccount();
-        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
@@ -111,12 +149,12 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void editThumbnailImage(SecurityAccount securityAccount, MultipartFile file, NoticeIdxDto dto) throws IOException {
         Account account = securityAccount.getAccount();
-        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
-        String path = "notice/" + notice.getIdx();
+        String path = "notice/" + notice.getUuid();
         // String name = "thumbnail";
         String name = "0";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
@@ -127,12 +165,12 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void editImages(SecurityAccount securityAccount, List<MultipartFile> files, NoticeIdxDto dto) throws IOException {
         Account account = securityAccount.getAccount();
-        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
-        String path = "notice/" + notice.getIdx();
+        String path = "notice/" + notice.getUuid();
 
         int idx = 0;
         for (MultipartFile file : files) {
@@ -145,14 +183,26 @@ public class NoticeServiceImpl implements NoticeService {
     // Deleter
     @Override
     @Transactional
+    public void delete(SecurityAccount securityAccount, NoticeIdxDto dto) {
+        Account account = securityAccount.getAccount();
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
+                .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
+        if (!notice.getAuthor().getIdx().equals(account.getIdx()))
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
+        
+        notice.setState(State.DISABLED);
+    }
+    
+    @Override
+    @Transactional
     public void deleteThumbnailImage(SecurityAccount securityAccount, NoticeIdxDto dto) {
         Account account = securityAccount.getAccount();
-        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
-        String path = "notice/" + notice.getIdx();
+        String path = "notice/" + notice.getUuid();
         // String name = "thumbnail";
         String name = "0";
         ImageDto imageDto = ImageDto.builder().path(path).name(name).build();
@@ -163,12 +213,12 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void deleteImages(SecurityAccount securityAccount, NoticeIdxDto dto) {
         Account account = securityAccount.getAccount();
-        Notice notice = noticeRepository.findByIdx(dto.getIdx())
+        Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         if (!notice.getAuthor().getIdx().equals(account.getIdx()))
             throw new PermissionException(PermissionErrorCode.FORBIDDEN);
 
-        String path = "notice/" + notice.getIdx();
+        String path = "notice/" + notice.getUuid();
         ImagePathDto imageDto = ImagePathDto.builder().path(path).build();
         imageService.deleteAllByPathLike(imageDto);
 

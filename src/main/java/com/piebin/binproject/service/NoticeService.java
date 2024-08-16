@@ -11,6 +11,7 @@ import java.util.List;
 public interface NoticeService {
     // Utility
     void create(SecurityAccount securityAccount, NoticeCreateDto dto);
+    void createWithImages(SecurityAccount securityAccount, List<MultipartFile> files, NoticeCreateDto dto) throws IOException;
 
     // Getter
     NoticeDetailDto load(SecurityAccount securityAccount, NoticeIdxDto dto);
@@ -24,6 +25,7 @@ public interface NoticeService {
     void editImages(SecurityAccount securityAccount, List<MultipartFile> files, NoticeIdxDto dto) throws IOException;
 
     // Deleter
+    void delete(SecurityAccount securityAccount, NoticeIdxDto dto);
     void deleteThumbnailImage(SecurityAccount securityAccount, NoticeIdxDto dto);
     void deleteImages(SecurityAccount securityAccount, NoticeIdxDto dto);
 }
