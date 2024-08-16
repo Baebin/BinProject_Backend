@@ -43,6 +43,9 @@ dependencies {
 
     // Api Doc
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+
+    // Google OAuth
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '3.3.2'
 }
 
 tasks.named('test') {

@@ -34,6 +34,7 @@ out/
 /.nb-gradle/
 
 application-db.properties
+application-oauth.properties
 application-security.properties
 
 ### VS Code ###

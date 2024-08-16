@@ -1,5 +1,6 @@
 package com.piebin.binproject.security;
 
+import com.piebin.binproject.security.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,8 @@ import java.util.Arrays;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
+
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,6 +59,12 @@ public class SecurityConfig {
 
                 .addFilterBefore(new SecurityFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
+
+                .and()
+                .oauth2Login((auth) -> auth.loginPage("/oauth2/authorization/google")
+                        .successHandler(oAuth2SuccessHandler)
+                        .failureUrl("/oauth2/authorization/google")
+                        .permitAll())
         ;
         return httpSecurity.build();
     }

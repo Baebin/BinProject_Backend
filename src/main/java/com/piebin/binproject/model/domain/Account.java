@@ -40,6 +40,11 @@ public class Account {
     @Builder.Default
     private List<AccountPermission> permissions = new ArrayList<>();
 
+    // OAuth2
+    private String provider;
+    @Column(name = "provider_id")
+    private String providerId;
+
     // Etc
     @CreatedDate
     @Column(name = "reg_date")
