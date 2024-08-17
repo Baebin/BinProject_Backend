@@ -8,14 +8,19 @@ import com.piebin.binproject.exception.entity.PostErrorCode;
 import com.piebin.binproject.exception.entity.PermissionErrorCode;
 import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.Post;
+import com.piebin.binproject.model.domain.PostView;
 import com.piebin.binproject.model.dto.image.ImageDetailDto;
 import com.piebin.binproject.model.dto.image.ImageDto;
 import com.piebin.binproject.model.dto.image.ImagePathDto;
 import com.piebin.binproject.model.dto.post.*;
 import com.piebin.binproject.repository.PostRepository;
+import com.piebin.binproject.repository.PostViewRepository;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.ImageService;
 import com.piebin.binproject.service.PostService;
+import com.piebin.binproject.utility.IpFinder;
+import com.piebin.binproject.utility.LocalDateTimeManager;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +38,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final PostViewRepository postViewRepository;
 
     private final ImageService imageService;
 
@@ -78,10 +84,19 @@ public class PostServiceImpl implements PostService {
 
     // Getter
     @Override
-    @Transactional(readOnly = true)
-    public PostDetailDto load(SecurityAccount securityAccount, PostIdxDto dto) {
+    @Transactional
+    public PostDetailDto load(HttpServletRequest request, SecurityAccount securityAccount, PostIdxDto dto) {
         Post post = postRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new PostException(PostErrorCode.NOT_FOUND));
+        // View
+        String ip = IpFinder.getClientOP(request);
+        if (!postViewRepository.existsByIpAndRegDateAfter(ip, LocalDateTimeManager.getStartOfDay())) {
+            PostView postView = PostView.builder()
+                    .post(post)
+                    .ip(ip)
+                    .build();
+            postViewRepository.save(postView);
+        }
         return PostDetailDto.toDto(post);
     }
 
@@ -89,9 +104,6 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<PostDetailDto> loadAll(SecurityAccount securityAccount, PostFilterDto dto) {
         List<PostDetailDto> dtos = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++)
-            System.out.println(UUID.randomUUID().toString());
 
         List<Post> posts;
         PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getCount());

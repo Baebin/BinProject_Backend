@@ -27,6 +27,8 @@ public class NoticeDetailDto {
     private String text;
 
     private Integer files;
+    @JsonProperty("view_count")
+    private Integer viewCount;
 
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     @JsonProperty("reg_date")
@@ -44,6 +46,7 @@ public class NoticeDetailDto {
                 .text(notice.getText())
 
                 .files(notice.getFiles())
+                .viewCount(notice.getViews().size())
 
                 .regDate(notice.getRegDate())
                 .build();

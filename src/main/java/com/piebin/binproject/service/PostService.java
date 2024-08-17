@@ -2,6 +2,7 @@ package com.piebin.binproject.service;
 
 import com.piebin.binproject.model.dto.post.*;
 import com.piebin.binproject.security.SecurityAccount;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ public interface PostService {
     void createWithImages(SecurityAccount securityAccount, List<MultipartFile> files, PostCreateDto dto) throws IOException;
     
     // Getter
-    PostDetailDto load(SecurityAccount securityAccount, PostIdxDto dto);
+    PostDetailDto load(HttpServletRequest request, SecurityAccount securityAccount, PostIdxDto dto);
     List<PostDetailDto> loadAll(SecurityAccount securityAccount, PostFilterDto dto);
     ResponseEntity<byte[]> loadThumbnailImage(SecurityAccount securityAccount, Long idx) throws IOException;
     ResponseEntity<byte[]> loadImage(SecurityAccount securityAccount, Long idx, Long fileIdx) throws IOException;

@@ -27,6 +27,8 @@ public class PostDetailDto {
     private String text;
 
     private Integer files;
+    @JsonProperty("view_count")
+    private Integer viewCount;
 
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     @JsonProperty("reg_date")
@@ -44,6 +46,7 @@ public class PostDetailDto {
                 .text(post.getText())
 
                 .files(post.getFiles())
+                .viewCount(post.getViews().size())
 
                 .regDate(post.getRegDate())
                 .build();

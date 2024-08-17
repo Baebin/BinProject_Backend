@@ -8,14 +8,19 @@ import com.piebin.binproject.exception.entity.NoticeErrorCode;
 import com.piebin.binproject.exception.entity.PermissionErrorCode;
 import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.Notice;
+import com.piebin.binproject.model.domain.NoticeView;
 import com.piebin.binproject.model.dto.image.ImageDetailDto;
 import com.piebin.binproject.model.dto.image.ImageDto;
 import com.piebin.binproject.model.dto.image.ImagePathDto;
 import com.piebin.binproject.model.dto.notice.*;
 import com.piebin.binproject.repository.NoticeRepository;
+import com.piebin.binproject.repository.NoticeViewRepository;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.ImageService;
 import com.piebin.binproject.service.NoticeService;
+import com.piebin.binproject.utility.IpFinder;
+import com.piebin.binproject.utility.LocalDateTimeManager;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +30,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +39,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService {
     private final NoticeRepository noticeRepository;
+    private final NoticeViewRepository noticeViewRepository;
 
     private final ImageService imageService;
 
@@ -78,10 +85,19 @@ public class NoticeServiceImpl implements NoticeService {
 
     // Getter
     @Override
-    @Transactional(readOnly = true)
-    public NoticeDetailDto load(SecurityAccount securityAccount, NoticeIdxDto dto) {
+    @Transactional
+    public NoticeDetailDto load(HttpServletRequest request, SecurityAccount securityAccount, NoticeIdxDto dto) {
         Notice notice = noticeRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
+        // View Count
+        String ip = IpFinder.getClientOP(request);
+        if (!noticeViewRepository.existsByIpAndRegDateAfter(ip, LocalDateTimeManager.getStartOfDay())) {
+            NoticeView noticeView = NoticeView.builder()
+                    .notice(notice)
+                    .ip(ip)
+                    .build();
+            noticeViewRepository.save(noticeView);
+        }
         return NoticeDetailDto.toDto(notice);
     }
 
@@ -89,9 +105,6 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(readOnly = true)
     public List<NoticeDetailDto> loadAll(SecurityAccount securityAccount, NoticeFilterDto dto) {
         List<NoticeDetailDto> dtos = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++)
-        System.out.println(UUID.randomUUID().toString());
 
         List<Notice> notices;
         PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getCount());

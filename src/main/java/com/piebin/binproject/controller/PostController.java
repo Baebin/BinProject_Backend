@@ -3,6 +3,7 @@ package com.piebin.binproject.controller;
 import com.piebin.binproject.model.dto.post.*;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,10 +44,11 @@ public class PostController {
     // Getter
     @GetMapping(API + "load")
     public ResponseEntity<PostDetailDto> load(
+            HttpServletRequest request,
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @Valid PostIdxDto dto) {
         return new ResponseEntity<>(
-                postService.load(securityAccount, dto), HttpStatus.OK);
+                postService.load(request, securityAccount, dto), HttpStatus.OK);
     }
 
     @GetMapping(API + "load/all")

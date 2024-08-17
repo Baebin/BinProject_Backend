@@ -2,6 +2,7 @@ package com.piebin.binproject.service;
 
 import com.piebin.binproject.model.dto.notice.*;
 import com.piebin.binproject.security.SecurityAccount;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ public interface NoticeService {
     void createWithImages(SecurityAccount securityAccount, List<MultipartFile> files, NoticeCreateDto dto) throws IOException;
 
     // Getter
-    NoticeDetailDto load(SecurityAccount securityAccount, NoticeIdxDto dto);
+    NoticeDetailDto load(HttpServletRequest request, SecurityAccount securityAccount, NoticeIdxDto dto);
     List<NoticeDetailDto> loadAll(SecurityAccount securityAccount, NoticeFilterDto dto);
     ResponseEntity<byte[]> loadThumbnailImage(SecurityAccount securityAccount, Long idx) throws IOException;
     ResponseEntity<byte[]> loadImage(SecurityAccount securityAccount, Long idx, Long fileIdx) throws IOException;

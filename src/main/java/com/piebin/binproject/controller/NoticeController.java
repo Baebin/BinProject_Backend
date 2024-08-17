@@ -3,6 +3,7 @@ package com.piebin.binproject.controller;
 import com.piebin.binproject.model.dto.notice.*;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.NoticeService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,10 +46,11 @@ public class NoticeController {
     // Getter
     @GetMapping(API + "load")
     public ResponseEntity<NoticeDetailDto> load(
+            HttpServletRequest request,
             @AuthenticationPrincipal SecurityAccount securityAccount,
             @Valid NoticeIdxDto dto) {
         return new ResponseEntity<>(
-                noticeService.load(securityAccount, dto), HttpStatus.OK);
+                noticeService.load(request, securityAccount, dto), HttpStatus.OK);
     }
 
     @GetMapping(API + "load/all")
