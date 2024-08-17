@@ -91,7 +91,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOT_FOUND));
         // View Count
         String ip = IpFinder.getClientOP(request);
-        if (!noticeViewRepository.existsByIpAndRegDateAfter(ip, LocalDateTimeManager.getStartOfDay())) {
+        if (!noticeViewRepository.existsByNoticeAndIpAndRegDateAfter(notice, ip, LocalDateTimeManager.getStartOfDay())) {
             NoticeView noticeView = NoticeView.builder()
                     .notice(notice)
                     .ip(ip)

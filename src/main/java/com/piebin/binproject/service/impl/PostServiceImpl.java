@@ -90,7 +90,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new PostException(PostErrorCode.NOT_FOUND));
         // View
         String ip = IpFinder.getClientOP(request);
-        if (!postViewRepository.existsByIpAndRegDateAfter(ip, LocalDateTimeManager.getStartOfDay())) {
+        if (!postViewRepository.existsByPostAndIpAndRegDateAfter(post, ip, LocalDateTimeManager.getStartOfDay())) {
             PostView postView = PostView.builder()
                     .post(post)
                     .ip(ip)
