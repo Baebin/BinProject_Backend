@@ -17,26 +17,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Notice {
+public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(unique = true, nullable = false)
-    private String uuid;
+    @ManyToOne
+    private Post post;
 
     @ManyToOne
     private Account author;
 
-    private String title;
-    private String text;
+    private String comment;
 
-    @Builder.Default
-    private Integer files = 0;
+    @JoinColumn(name = "parent_comment")
+    @ManyToOne
+    private PostComment parentComment;
 
-    @OneToMany(mappedBy = "notice")
+    @OneToMany(mappedBy = "parentComment")
     @Builder.Default
-    private List<NoticeView> views = new ArrayList<>();
+    private List<PostComment> childComments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Builder.Default

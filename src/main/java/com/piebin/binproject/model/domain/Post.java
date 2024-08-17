@@ -36,13 +36,17 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     @Builder.Default
-    private List<PostView> views = new ArrayList<>();
+    private List<PostComment> comments = new ArrayList<>();
 
-    @CreatedDate
-    @Column(name = "reg_date")
-    private LocalDateTime regDate;
+    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    private List<PostView> views = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private State state = State.ENABLED;
+
+    @CreatedDate
+    @Column(name = "reg_date")
+    private LocalDateTime regDate;
 }

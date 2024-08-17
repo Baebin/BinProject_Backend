@@ -31,9 +31,18 @@ public class Account {
     private String phone;
     private String email;
 
+    // Domain
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     @Builder.Default
     List<Notice> notices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author")
+    @Builder.Default
+    private List<PostComment> postComments = new ArrayList<>();
 
     // Permission
     @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
