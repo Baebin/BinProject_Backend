@@ -4,6 +4,7 @@ import com.piebin.binproject.model.dto.post.*;
 import com.piebin.binproject.model.dto.post_comment.PostCommentCreateDto;
 import com.piebin.binproject.model.dto.post_comment.PostCommentDetailDto;
 import com.piebin.binproject.model.dto.post_comment.PostCommentIdxDto;
+import com.piebin.binproject.model.dto.post_comment.PostCommentLikeDto;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.PostCommentService;
 import jakarta.validation.Valid;
@@ -38,6 +39,15 @@ public class PostCommentController {
             @Valid PostIdxDto dto) {
         return new ResponseEntity<>(
                 postCommentService.loadAll(securityAccount, dto), HttpStatus.OK);
+    }
+
+    // Setter
+    @PutMapping(API + "edit/like")
+    public ResponseEntity<Boolean> editLike(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid PostCommentLikeDto dto) {
+        postCommentService.editLike(securityAccount, dto);
+        return ResponseEntity.ok(true);
     }
 
     // Deleter

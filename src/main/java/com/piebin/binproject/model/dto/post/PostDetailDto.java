@@ -32,11 +32,16 @@ public class PostDetailDto {
     @JsonProperty("comment_count")
     private Integer commentCount;
 
+    @JsonProperty("like_state")
+    private Boolean likeState;
+    @JsonProperty("like_count")
+    private Integer likeCount;
+
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     @JsonProperty("reg_date")
     private LocalDateTime regDate;
 
-    public static PostDetailDto toDto(Post post) {
+    public static PostDetailDto toDto(Account account, Post post) {
         Account author = post.getAuthor();
         return PostDetailDto.builder()
                 .idx(post.getIdx())
@@ -50,6 +55,9 @@ public class PostDetailDto {
                 .files(post.getFiles())
                 .viewCount(post.getViews().size())
                 .commentCount(post.getComments().size())
+
+                .likeState(account != null ? post.hasLike(account) : false)
+                .likeCount(post.getLikes().size())
 
                 .regDate(post.getRegDate())
                 .build();

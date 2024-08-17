@@ -86,6 +86,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostDetailDto load(HttpServletRequest request, SecurityAccount securityAccount, PostIdxDto dto) {
+        Account account = (securityAccount != null ? securityAccount.getAccount() : null);
+
         Post post = postRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
                 .orElseThrow(() -> new PostException(PostErrorCode.NOT_FOUND));
         // View
@@ -97,7 +99,7 @@ public class PostServiceImpl implements PostService {
                     .build();
             postViewRepository.save(postView);
         }
-        return PostDetailDto.toDto(post);
+        return PostDetailDto.toDto(account, post);
     }
 
     @Override

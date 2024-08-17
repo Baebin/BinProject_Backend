@@ -42,6 +42,10 @@ public class Post {
     @Builder.Default
     private List<PostView> views = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    private List<PostLike> likes = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private State state = State.ENABLED;
@@ -49,4 +53,11 @@ public class Post {
     @CreatedDate
     @Column(name = "reg_date")
     private LocalDateTime regDate;
+
+    public boolean hasLike(Account account) {
+        for (PostLike like : likes)
+            if (like.getAccount().getIdx().equals(account.getIdx()))
+                return true;
+        return false;
+    }
 }

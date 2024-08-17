@@ -8,11 +8,14 @@ import com.piebin.binproject.exception.entity.PostErrorCode;
 import com.piebin.binproject.model.domain.Account;
 import com.piebin.binproject.model.domain.Post;
 import com.piebin.binproject.model.domain.PostComment;
+import com.piebin.binproject.model.domain.PostLike;
 import com.piebin.binproject.model.dto.post.PostIdxDto;
 import com.piebin.binproject.model.dto.post_comment.PostCommentCreateDto;
 import com.piebin.binproject.model.dto.post_comment.PostCommentDetailDto;
 import com.piebin.binproject.model.dto.post_comment.PostCommentIdxDto;
+import com.piebin.binproject.model.dto.post_comment.PostCommentLikeDto;
 import com.piebin.binproject.repository.PostCommentRepository;
+import com.piebin.binproject.repository.PostLikeRepository;
 import com.piebin.binproject.repository.PostRepository;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.PostCommentService;
@@ -26,6 +29,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PostCommentServiceImpl implements PostCommentService {
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
     private final PostCommentRepository postCommentRepository;
 
     // Utility
@@ -79,6 +83,31 @@ public class PostCommentServiceImpl implements PostCommentService {
         for (Long key : commentMap.keySet())
             dtos.add(commentMap.get(key));
         return dtos;
+    }
+
+    // Setter
+    @Override
+    @Transactional
+    public void editLike(SecurityAccount securityAccount, PostCommentLikeDto dto) {
+        Account account = securityAccount.getAccount();
+
+        // Post
+        Post post = postRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
+                .orElseThrow(() -> new PostException(PostErrorCode.NOT_FOUND));
+
+        if (dto.getLike()) {
+            if (post.hasLike(account))
+                return;
+            PostLike postLike = PostLike.builder()
+                    .post(post)
+                    .account(account)
+                    .build();
+            postLikeRepository.save(postLike);
+        } else {
+            if (!post.hasLike(account))
+                return;
+            postLikeRepository.deleteAllByPostAndAccount(post, account);
+        }
     }
 
     // Deleter
