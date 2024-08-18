@@ -28,7 +28,9 @@ public class Notice {
     @ManyToOne
     private Account author;
 
+    @Column(length = 100)
     private String title;
+    @Column(length = 50000)
     private String text;
 
     @Builder.Default

@@ -28,6 +28,7 @@ public class PostComment {
     @ManyToOne
     private Account author;
 
+    @Column(length = 1000)
     private String comment;
 
     @JoinColumn(name = "parent_comment")
