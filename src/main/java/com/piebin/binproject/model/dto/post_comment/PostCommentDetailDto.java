@@ -30,6 +30,9 @@ public class PostCommentDetailDto {
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     @JsonProperty("reg_date")
     private LocalDateTime regDate;
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
+    @JsonProperty("edited_date")
+    private LocalDateTime editedDate;
 
     public static PostCommentDetailDto toDto(PostComment postComment) {
         Account author = postComment.getAuthor();
@@ -44,6 +47,7 @@ public class PostCommentDetailDto {
                 .state(postComment.getState())
 
                 .regDate(postComment.getRegDate())
+                .editedDate(postComment.getEditedDate())
                 .build();
     }
 }

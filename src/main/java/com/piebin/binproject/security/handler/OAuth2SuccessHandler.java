@@ -28,7 +28,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = tokenProvider.createAccessToken(id);
 
         AccountLoginDetailDto dto = AccountLoginDetailDto.toDto(account, token);
-        String url = "http://piebin.kro.kr/login/redirect/" + dto.getToken() + "/" + dto.getName() + "/" + dto.getPermission();
+        String url = "http://piebin.kro.kr/login/redirect/"
+                + dto.getToken() + "/"
+                + dto.getIdx() + "/"
+                + dto.getName() + "/"
+                + dto.getPermission();
         getRedirectStrategy().sendRedirect(request, response, url);
     }
 }

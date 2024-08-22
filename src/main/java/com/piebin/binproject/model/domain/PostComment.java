@@ -46,4 +46,7 @@ public class PostComment {
     @CreatedDate
     @Column(name = "reg_date")
     private LocalDateTime regDate;
+
+    @Column(name = "edited_date")
+    private LocalDateTime editedDate;
 }

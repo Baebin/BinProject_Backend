@@ -72,6 +72,7 @@ public class PostDetailDto {
                 .authorName(author.getName())
 
                 .title(post.getTitle())
+                .viewCount(post.getViews().size())
 
                 .regDate(post.getRegDate())
                 .build();

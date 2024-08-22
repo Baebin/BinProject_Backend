@@ -1,5 +1,6 @@
 package com.piebin.binproject.model.domain;
 
+import com.piebin.binproject.entity.Permission;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -58,4 +59,11 @@ public class Account {
     @CreatedDate
     @Column(name = "reg_date")
     private LocalDateTime regDate;
+
+    public boolean isAdmin() {
+        for (AccountPermission accountPermission : permissions)
+            if (accountPermission.getPermission().equals(Permission.ADMIN))
+                return true;
+        return false;
+    }
 }

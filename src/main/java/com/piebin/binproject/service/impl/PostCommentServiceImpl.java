@@ -10,10 +10,7 @@ import com.piebin.binproject.model.domain.Post;
 import com.piebin.binproject.model.domain.PostComment;
 import com.piebin.binproject.model.domain.PostLike;
 import com.piebin.binproject.model.dto.post.PostIdxDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentCreateDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentDetailDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentIdxDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentLikeDto;
+import com.piebin.binproject.model.dto.post_comment.*;
 import com.piebin.binproject.repository.PostCommentRepository;
 import com.piebin.binproject.repository.PostLikeRepository;
 import com.piebin.binproject.repository.PostRepository;
@@ -23,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -86,6 +84,22 @@ public class PostCommentServiceImpl implements PostCommentService {
     }
 
     // Setter
+    @Override
+    @Transactional
+    public void edit(SecurityAccount securityAccount, PostCommentEditDto dto) {
+        Account account = securityAccount.getAccount();
+
+        // Permission Check
+        PostComment postComment = postCommentRepository.findByIdxAndState(dto.getIdx(), State.ENABLED)
+                .orElseThrow(() -> new PostException(PostErrorCode.COMMENT_NOT_FOUND));
+        if (!postComment.getAuthor().getIdx().equals(account.getIdx()))
+            throw new PermissionException(PermissionErrorCode.FORBIDDEN);
+
+        if (!postComment.getComment().equals(dto.getComment()))
+            postComment.setEditedDate(LocalDateTime.now());
+        postComment.setComment(dto.getComment());
+    }
+
     @Override
     @Transactional
     public void editLike(SecurityAccount securityAccount, PostCommentLikeDto dto) {

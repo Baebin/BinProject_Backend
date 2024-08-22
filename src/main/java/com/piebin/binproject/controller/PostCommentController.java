@@ -1,10 +1,7 @@
 package com.piebin.binproject.controller;
 
 import com.piebin.binproject.model.dto.post.*;
-import com.piebin.binproject.model.dto.post_comment.PostCommentCreateDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentDetailDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentIdxDto;
-import com.piebin.binproject.model.dto.post_comment.PostCommentLikeDto;
+import com.piebin.binproject.model.dto.post_comment.*;
 import com.piebin.binproject.security.SecurityAccount;
 import com.piebin.binproject.service.PostCommentService;
 import jakarta.validation.Valid;
@@ -42,6 +39,14 @@ public class PostCommentController {
     }
 
     // Setter
+    @PutMapping(API + "edit")
+    public ResponseEntity<Boolean> edit(
+            @AuthenticationPrincipal SecurityAccount securityAccount,
+            @RequestBody @Valid PostCommentEditDto dto) {
+        postCommentService.edit(securityAccount, dto);
+        return ResponseEntity.ok(true);
+    }
+
     @PutMapping(API + "edit/like")
     public ResponseEntity<Boolean> editLike(
             @AuthenticationPrincipal SecurityAccount securityAccount,
