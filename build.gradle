@@ -46,6 +46,10 @@ dependencies {
 
     // Google OAuth
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '3.3.2'
+
+    // Etc
+    implementation group: 'com.google.guava', name: 'guava', version: '33.3.0-jre'
+
 }
 
 tasks.named('test') {
